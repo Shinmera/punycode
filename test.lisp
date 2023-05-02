@@ -1,0 +1,70 @@
+#|
+ This file is a part of punycode
+ (c) 2023 Shirakumo http://tymoon.eu (shinmera@tymoon.eu)
+ Author: Nicolas Hafner <shinmera@tymoon.eu>
+|#
+
+(defpackage #:org.shirakumo.punycode.test
+  (:use #:cl #:parachute #:org.shirakumo.punycode)
+  (:export #:punycode))
+(in-package #:org.shirakumo.punycode.test)
+
+(parachute:define-test punycode)
+
+(parachute:define-test encode
+  :parent punycode
+  (is string= "a-" (encode "a"))
+  (is string= "A-" (encode "A"))
+  (is string= "3-" (encode "3"))
+  (is string= "--" (encode "-"))
+  (is string= "---" (encode "--"))
+  (is string= "London-" (encode "London"))
+  (is string= "Lloyd-Atkinson-" (encode "Lloyd-Atkinson"))
+  (is string= "This has spaces-" (encode "This has spaces"))
+  (is string= "-> $1.00 <--" (encode "-> $1.00 <-"))
+  (is string= "80a" (encode "а"))
+  (is string= "tda" (encode "ü"))
+  (is string= "mxa" (encode "α"))
+  (is string= "fsq" (encode "例"))
+  (is string= "n28h" (encode "😉"))
+  (is string= "mxacd" (encode "αβγ"))
+  (is string= "Mnchen-3ya" (encode "München"))
+  (is string= "Mnchen-3ya-" (encode "Mnchen-3ya"))
+  (is string= "Mnchen-Ost-9db" (encode "München-Ost"))
+  (is string= "Bahnhof Mnchen-Ost-u6b" (encode "Bahnhof München-Ost"))
+  (is string= "abcdef-qua4k" (encode "abæcdöef"))
+  (is string= "80aafi6cg" (encode "правда"))
+  (is string= "22cdfh1b8fsa" (encode "ยจฆฟคฏข"))
+  (is string= "hq1bm8jm9l" (encode "도메인"))
+  (is string= "eckwd4c7cu47r2wf" (encode "ドメイン名例"))
+  (is string= "MajiKoi5-783gue6qz075azm5e" (encode "MajiでKoiする5秒前"))
+  (is string= "bcher-kva8445foa" (encode "「bücher」")))
+
+(parachute:define-test decode
+  :parent punycode
+  (is string= "a" (decode "a-"))
+  (is string= "A" (decode "A-"))
+  (is string= "3" (decode "3-"))
+  (is string= "-" (decode "--"))
+  (is string= "--" (decode "---"))
+  (is string= "London" (decode "London-"))
+  (is string= "Lloyd-Atkinson" (decode "Lloyd-Atkinson-"))
+  (is string= "This has spaces" (decode "This has spaces-"))
+  (is string= "-> $1.00 <-" (decode "-> $1.00 <--"))
+  (is string= "а" (decode "80a"))
+  (is string= "ü" (decode "tda"))
+  (is string= "α" (decode "mxa"))
+  (is string= "例" (decode "fsq"))
+  (is string= "😉" (decode "n28h"))
+  (is string= "αβγ" (decode "mxacd"))
+  (is string= "München" (decode "Mnchen-3ya"))
+  (is string= "Mnchen-3ya" (decode "Mnchen-3ya-"))
+  (is string= "München-Ost" (decode "Mnchen-Ost-9db"))
+  (is string= "Bahnhof München-Ost" (decode "Bahnhof Mnchen-Ost-u6b"))
+  (is string= "abæcdöef" (decode "abcdef-qua4k"))
+  (is string= "правда" (decode "80aafi6cg"))
+  (is string= "ยจฆฟคฏข" (decode "22cdfh1b8fsa"))
+  (is string= "도메인" (decode "hq1bm8jm9l"))
+  (is string= "ドメイン名例" (decode "eckwd4c7cu47r2wf"))
+  (is string= "MajiでKoiする5秒前" (decode "MajiKoi5-783gue6qz075azm5e"))
+  (is string= "「bücher」" (decode "bcher-kva8445foa")))
