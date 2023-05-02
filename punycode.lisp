@@ -153,7 +153,9 @@
 
 (defun decode-domain (string &optional out)
   (cond ((and (< (length "xn--") (length string))
-              (string= "xn--" string :end2 (length "xn--"))))
+              (string= "xn--" string :end2 (length "xn--")))
+         ;; TODO: avoid copy here.
+         (decode (subseq string (length "xn--")) out))
         (out
          (with-stream out
            (write-string string out)))
