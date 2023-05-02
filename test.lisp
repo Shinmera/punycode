@@ -38,7 +38,8 @@
   (is string= "hq1bm8jm9l" (encode "도메인"))
   (is string= "eckwd4c7cu47r2wf" (encode "ドメイン名例"))
   (is string= "MajiKoi5-783gue6qz075azm5e" (encode "MajiでKoiする5秒前"))
-  (is string= "bcher-kva8445foa" (encode "「bücher」")))
+  (is string= "bcher-kva8445foa" (encode "「bücher」"))
+  (is string= "xn--eckwd4c7cu47r2wf.com.xn--eckwd4c7cu47r2wf" (encode-domain "ドメイン名例.com.ドメイン名例")))
 
 (parachute:define-test decode
   :parent punycode
@@ -67,4 +68,5 @@
   (is string= "도메인" (decode "hq1bm8jm9l"))
   (is string= "ドメイン名例" (decode "eckwd4c7cu47r2wf"))
   (is string= "MajiでKoiする5秒前" (decode "MajiKoi5-783gue6qz075azm5e"))
-  (is string= "「bücher」" (decode "bcher-kva8445foa")))
+  (is string= "「bücher」" (decode "bcher-kva8445foa"))
+  (is string= "ドメイン名例.com.ドメイン名例" (decode-domain "xn--eckwd4c7cu47r2wf.com.xn--eckwd4c7cu47r2wf")))

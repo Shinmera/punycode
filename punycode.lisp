@@ -140,24 +140,28 @@
       (write-string uni out :end written))))
 
 (defun encode-domain (string &optional out)
-  (cond ((loop for char across string
-               thereis (<= 127 (char-code char)))
-         (with-stream out
-           (write-string "xn--" out)
-           (encode string out)))
-        (out
-         (with-stream out 
-           (write-string string out)))
-        (T
-         string)))
+  (with-stream out
+    (loop for start = 0 then (1+ end)
+          for end = (or (position #\. string :start start) (length string))
+          do (cond ((loop for i from start below end
+                          thereis (< 127 (char-code (char string i))))
+                    (write-string "xn--" out)
+                    (encode (subseq string start end) out))
+                   (T
+                    (write-string string out :start start :end end)))
+             (if (< end (length string))
+                 (write-char #\. out)
+                 (return)))))
 
 (defun decode-domain (string &optional out)
-  (cond ((and (< (length "xn--") (length string))
-              (string= "xn--" string :end2 (length "xn--")))
-         ;; TODO: avoid copy here.
-         (decode (subseq string (length "xn--")) out))
-        (out
-         (with-stream out
-           (write-string string out)))
-        (T
-         string)))
+  (with-stream out
+    (loop for start = 0 then (1+ end)
+          for end = (or (position #\. string :start start) (length string))
+          do (cond ((and (< (length "xn--") (- end start))
+                         (string= "xn--" string :start2 start :end2 (+ start (length "xn--"))))
+                    (decode (subseq string (+ start (length "xn--")) end) out))
+                   (T
+                    (write-string string out :start start :end end)))
+             (if (< end (length string))
+                 (write-char #\. out)
+                 (return)))))
