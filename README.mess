@@ -1,0 +1,4 @@
+# About Punycode
+This implements encoding and decoding of Punycode strings, specified in RFC 3492 and used for unicode characters in domain names.
+
+Use ``encode`` and ``decode`` or for dealing with the domain names directly, ``encode-domain`` and ``decode-domain``.
