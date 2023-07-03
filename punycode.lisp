@@ -1,9 +1,3 @@
-#|
- This file is a part of punycode
- (c) 2023 Shirakumo http://tymoon.eu (shinmera@tymoon.eu)
- Author: Nicolas Hafner <shinmera@tymoon.eu>
-|#
-
 (defpackage #:org.shirakumo.punycode
   (:use #:cl)
   (:export
